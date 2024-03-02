@@ -3,7 +3,7 @@
 }
 
 .App-logo {
-  height: 40vmin;
+  height: 25vmin;
   pointer-events: none;
 }
 
@@ -26,6 +26,20 @@
 
 .App-link {
   color: #61dafb;
+}
+
+.App-button {
+  margin: 15px;
+  width: 200px;
+  height: 50px;
+  color: black;
+  background-color: gray;
+  border-radius: 20px;
+  cursor: pointer;
+}
+
+.App-ul {
+  font-size: 16px;
 }
 
 @keyframes App-logo-spin {

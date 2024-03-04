@@ -7,7 +7,7 @@
     "8base-sdk": "^1.6.2",
     "@8base/boost": "^1.12.1",
     "@8base/error-codes": "^1.0.23",
-    "@8base/file-manager": "^1.0.4",
+    "@8base/file-manager": "^1.0.6",
     "@apollo/client": "^3.3.7",
     "@testing-library/jest-dom": "^5.17.0",
     "@testing-library/react": "^13.4.0",
@@ -17,6 +17,7 @@
     "graphql": "14.3.1",
     "graphql-tag": "^2.10.1",
     "react": "^18.2.0",
+    "react-apollo": "^3.1.5",
     "react-dom": "^18.2.0",
     "react-scripts": "4.0.3",
     "web-vitals": "^2.1.4"

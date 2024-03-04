@@ -29,17 +29,30 @@
 }
 
 .App-button {
-  margin: 15px;
+  margin: 5px;
   width: 200px;
-  height: 50px;
-  color: black;
+  height: 40px;
+  font-size: 16px;
+  font-weight: bold;
+  color: white;
   background-color: gray;
+  border-color: white;
   border-radius: 20px;
   cursor: pointer;
 }
 
 .App-ul {
   font-size: 16px;
+}
+
+input[type=text] {
+  width: 15%;
+  padding: 10px 5px;
+  margin: 5px 0;
+  display: inline-block;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  box-sizing: border-box;
 }
 
 @keyframes App-logo-spin {

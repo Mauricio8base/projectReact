@@ -2,7 +2,7 @@ import "dotenv/config";
 import logo from "./logo.svg";
 import "./App.css";
 
-import React, { useState, useCallback } from "react";
+import React, { useState } from "react";
 import { FileInput as NewFileInput } from "@8base/file-manager";
 
 import { useQuery, gql, useMutation } from "@apollo/client";
@@ -22,11 +22,11 @@ const FILE_LIST_QUERY = gql`
 `;
 
 const MY_MUTATION = gql`
-  mutation Table_s3Create($input: Table_s3CreateInput!) {
-    table_s3Create(data: $input) {
+  mutation Table_01Create($input: Table_01CreateInput!) {
+    table_01Create(data: $input) {
       id
       name
-      file_image_01 {
+      file_image {
         id
         fileId
         filename
@@ -35,7 +35,19 @@ const MY_MUTATION = gql`
         meta
         public
       }
-      file_image_02 {
+      file_image_mult {
+        items {
+          id
+          fileId
+          filename
+          downloadUrl
+          shareUrl
+          meta
+          public
+        }
+        count
+      }
+      file_file {
         id
         fileId
         filename
@@ -44,23 +56,17 @@ const MY_MUTATION = gql`
         meta
         public
       }
-      file_file_01 {
-        id
-        fileId
-        filename
-        downloadUrl
-        shareUrl
-        meta
-        public
-      }
-      file_file_02 {
-        id
-        fileId
-        filename
-        downloadUrl
-        shareUrl
-        meta
-        public
+      file_file_mult {
+        items {
+          id
+          fileId
+          filename
+          downloadUrl
+          shareUrl
+          meta
+          public
+        }
+        count
       }
     }
   }
@@ -73,7 +79,7 @@ function App() {
       variables: {
         input: {
           name: "TestFromReactApp",
-          file_image_01: {
+          file_image: {
             create: {
               fileId: fileId,
               filename: nameFile,
@@ -91,23 +97,6 @@ function App() {
     console.log("clicked");
     openModal();
   };
-
-  const handleClickPick = useCallback(async (pick) => {
-    console.log("clicked test");
-    console.log(pick);
-    const accept = "img"
-    const picker = await pick({
-      onFileUploadFailed: async (file, error) => {
-        if (error && error.message === "UPLOAD_CANCELLED_ERROR") {
-          return;
-        }
-        //const errorMessage = getFilestackErrorMessage(file, error);
-        await picker.close();
-        //toast.error(errorMessage);
-      },
-      ...(accept ? { accept } : {}),
-    });
-    }, []);
 
   const [nameFile, setnameFile] = useState("Name file..");
   const [fileId, setfileId] = useState(null);
@@ -157,7 +146,8 @@ function App() {
           value={null}
           workspace={process.env.REACT_APP_WORKSPACE}
           environment={process.env.REACT_APP_ENV}
-          uploadHost={`https://qa4-file-manager.8basedev.com`}
+          error={(error) => console.log("Error from error: " + error)}
+          uploadHost={process.env.REACT_APP_UPLOADHOST}
         >
           {({ pick }) => (
             <>

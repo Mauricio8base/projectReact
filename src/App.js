@@ -102,8 +102,10 @@ function App() {
   const [fileId, setfileId] = useState(null);
 
   const handleGetResponse = (file) => {
-    setnameFile(file[0].filename);
-    setfileId(file[0].fileId);
+    if (file.length > 0){
+      setnameFile(file[0].filename);
+      setfileId(file[0].fileId);
+    }
   };
 
   if (loading)

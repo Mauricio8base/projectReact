@@ -15,13 +15,26 @@ const FILE_LIST_QUERY = gql`
         id
         fileId
         filename
-        meta
+        downloadUrl
       }
     }
   }
 `;
 
-const MY_MUTATION = gql`
+const FILE_LIST_SETTINGS = gql`
+  query filesSettingsList {
+  filesSettingsList {
+    count
+    items {
+      id
+      filemanagername
+      settings
+    }
+  }
+}
+`;
+
+const MUTATION_CREATE_RECORD = gql`
   mutation Table_01Create($input: Table_01CreateInput!) {
     table_01Create(data: $input) {
       id
@@ -73,12 +86,14 @@ const MY_MUTATION = gql`
 `;
 
 function App() {
-  const [createRow, { dataCreate }] = useMutation(MY_MUTATION);
+  const { data: dataSettings, loading: loading1, error: errorSettings } = useQuery(FILE_LIST_SETTINGS);
+  const { data, loading, error, refetch } = useQuery(FILE_LIST_QUERY);
+  const [createRow, { dataCreate }] = useMutation(MUTATION_CREATE_RECORD);
   const handleCreateRow = () => {
     createRow({
       variables: {
         input: {
-          name: "TestFromReactApp",
+          name: nameRecord + " from React",
           file_image: {
             create: {
               fileId: fileId,
@@ -88,21 +103,27 @@ function App() {
           },
         },
       },
+    }).then(() => { 
+      refetch();
     });
   };
-
-  const { data, loading, error } = useQuery(FILE_LIST_QUERY);
 
   const handleClickModal = (openModal) => {
     console.log("clicked");
     openModal();
   };
 
-  const [nameFile, setnameFile] = useState("Name file..");
+  const [nameRecord, setNameRecord] = useState('Name Test');
+
+  const handleNameRecord = (event) => {
+    setNameRecord(event.target.value);
+  };
+
+  const [nameFile, setnameFile] = useState('Name File');
   const [fileId, setfileId] = useState(null);
 
   const handleGetResponse = (file) => {
-    if (file.length > 0){
+    if (file && file.length > 0) {
       setnameFile(file[0].filename);
       setfileId(file[0].fileId);
     }
@@ -128,6 +149,16 @@ function App() {
       </div>
     );
 
+    if (errorSettings)
+      return (
+        <div className="App">
+          <header className="App-header">
+            <pre>{errorSettings.message}</pre>
+            <img src={logo} className="App-logo" alt="logo" />
+          </header>
+        </div>
+      );
+
   if (dataCreate) console.log("dataCreate: " + dataCreate);
 
   return (
@@ -137,7 +168,7 @@ function App() {
 
         <label>Name:</label>
         <br></br>
-        <input type="text" placeholder="Name.."></input>
+        <input type="text" placeholder="Name.." value={nameRecord} onChange={handleNameRecord}></input>
         <br></br>
         <NewFileInput
           apiKey={process.env.REACT_APP_API_TOKEN}
@@ -148,7 +179,7 @@ function App() {
           value={null}
           workspace={process.env.REACT_APP_WORKSPACE}
           environment={process.env.REACT_APP_ENV}
-          error={(error) => console.log("Error from error: " + error)}
+          errorCallback={(error) => console.log("Error from error: " + error)}
           uploadHost={process.env.REACT_APP_UPLOADHOST}
         >
           {({ pick }) => (
@@ -171,15 +202,48 @@ function App() {
         <br></br>
 
         <img src={logo} className="App-logo" alt="logo" />
-        <h3>filesList - count: {data.filesList.count}</h3>
-        <ul className="App-ul">
-          {data.filesList.items.map((file, index) => (
-            <>
-              <li key={index + "id"}>{file.fileId}</li>
-              <li key={index + "name"}>{file.filename}</li>
-            </>
-          ))}
-        </ul>
+
+        <h3>Files List - count: {data.filesList.count}</h3>
+          {data.filesList.count > 0 && (
+            <table className="App-table">
+              <thead>
+                <tr>
+                  <th>File ID</th>
+                  <th>File Name</th>
+                  <th>downloadUrl</th>
+                </tr>
+              </thead>
+              <tbody>
+                {data.filesList.items.map((file, index) => (
+                  <tr>
+                    <td key={index + "id"}>{file.fileId}</td>
+                    <td key={index + "name"}>{file.filename}</td>
+                    <td key={index + "url"}>{file.downloadUrl}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          )}
+
+        <h3>File Settings </h3>
+          {dataSettings.filesSettingsList.count > 0 && (
+            <table className="App-table">
+              <thead>
+                <tr>
+                  <th>accessKeyId</th>
+                  <th>secretAccessKey</th>
+                </tr>
+              </thead>
+              <tbody>
+                {dataSettings.filesSettingsList.items.map((file, index) => (
+                  <tr>
+                    <td key={index + "key"}>{file.settings.credentials.accessKeyId}</td>
+                    <td key={index + "secret"}>{file.settings.credentials.secretAccessKey}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          )}
       </header>
     </div>
   );

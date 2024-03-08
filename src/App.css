@@ -3,7 +3,7 @@
 }
 
 .App-logo {
-  height: 25vmin;
+  height: 20vmin;
   pointer-events: none;
 }
 
@@ -41,8 +41,26 @@
   cursor: pointer;
 }
 
-.App-ul {
+.App-table {
   font-size: 16px;
+  text-align: left;
+  border-collapse: collapse;
+  margin: 25px;
+}
+
+.App-table th, .App-table td {
+  border: 1px solid black;
+  padding: 10px;
+  text-align: justify;
+  word-break: break-word;
+}
+
+.App-table th:nth-child(1) {
+  width: 15%;
+}
+
+.App-table th:nth-child(2) {
+  width: 15%;
 }
 
 input[type=text] {

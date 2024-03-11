@@ -86,7 +86,7 @@ const MUTATION_CREATE_RECORD = gql`
 `;
 
 function App() {
-  const { data: dataSettings, loading: loading1, error: errorSettings } = useQuery(FILE_LIST_SETTINGS);
+  const { data: dataSettings, loading: loadingSettings, error: errorSettings } = useQuery(FILE_LIST_SETTINGS);
   const { data, loading, error, refetch } = useQuery(FILE_LIST_QUERY);
   const [createRow, { dataCreate }] = useMutation(MUTATION_CREATE_RECORD);
   const handleCreateRow = () => {
@@ -133,7 +133,7 @@ function App() {
     return (
       <div className="App">
         <header className="App-header">
-          <h1>Loading...</h1>
+          <h1>Loading File List...</h1>
           <img src={logo} className="App-logo" alt="logo" />
         </header>
       </div>
@@ -148,16 +148,26 @@ function App() {
         </header>
       </div>
     );
+  
+  if (loadingSettings)
+    return (
+      <div className="App">
+        <header className="App-header">
+          <h1>Loading File Settings...</h1>
+          <img src={logo} className="App-logo" alt="logo" />
+        </header>
+      </div>
+    );
 
-    if (errorSettings)
-      return (
-        <div className="App">
-          <header className="App-header">
-            <pre>{errorSettings.message}</pre>
-            <img src={logo} className="App-logo" alt="logo" />
-          </header>
-        </div>
-      );
+  if (errorSettings)
+    return (
+      <div className="App">
+        <header className="App-header">
+          <pre>{errorSettings.message}</pre>
+          <img src={logo} className="App-logo" alt="logo" />
+        </header>
+      </div>
+    );
 
   if (dataCreate) console.log("dataCreate: " + dataCreate);
 
